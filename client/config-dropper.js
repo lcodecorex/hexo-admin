@@ -34,6 +34,9 @@ var ConfigDropper = React.createClass({
       tags: toText(this.props.post.tags, tagCatMeta.tags),
       categories: toText(this.props.post.categories, tagCatMeta.categories),
       author: this.props.post.author,
+      keywords: this.props.post.keywords,
+      excerpt: this.props.post.excerpt,
+      photos: this.props.post.photos,
     }
     addMetadata(state, tagCatMeta.metadata, this.props.post);
     return state
@@ -49,6 +52,9 @@ var ConfigDropper = React.createClass({
       tags: toText(nextProps.post.tags, tagCatMeta.tags),
       categories: toText(nextProps.post.categories, tagCatMeta.categories),
       author: nextProps.post.author,
+      keywords: nextProps.post.keywords,
+      excerpt: nextProps.post.excerpt,
+      photos: nextProps.post.photos,
     }
     addMetadata(state, tagCatMeta.metadata, nextProps.post);
     this.setState(state)
@@ -101,6 +107,18 @@ var ConfigDropper = React.createClass({
     })
   },
 
+  _onChangeKeywords: function (e) {
+    this.setState({
+      keywords: e.target.value
+    })
+  },
+
+  _onChangeExcerpt: function (e) {
+    this.setState({
+      excerpt: e.target.value
+    })
+  },
+
   _onChangeMetadata: function (e) {
     var state = {}
     state[e.target.name] = e.target.value
@@ -122,10 +140,17 @@ var ConfigDropper = React.createClass({
     var tags = toText(this.props.post.tags, tagCatMeta.tags)
     var categories = toText(this.props.post.categories, tagCatMeta.categories)
     var author = this.props.post.author
+    var keywords = this.props.post.keywords
+    var excerpt = this.props.post.excerpt
+    var photos = this.props.post.photos
+
     var textDate = date.toISOString()
     var isSameMetadata = isMetadataEqual(this.state, tagCatMeta.metadata, this.props.post)
     if (textDate === this.props.post.date &&
         _.isEqual(this.state.categories, categories) &&
+        _.isEqual(this.state.keywords, keywords) &&
+        _.isEqual(this.state.excerpt, excerpt) &&
+        _.isEqual(this.state.photos, photos) &&
         _.isEqual(this.state.tags, tags) && author === this.state.author &&
         isSameMetadata) {
       return
@@ -135,6 +160,9 @@ var ConfigDropper = React.createClass({
       categories: this.state.categories,
       tags: this.state.tags,
       author: this.state.author,
+      keywords: this.state.keywords,
+      excerpt: this.state.excerpt,
+      photos: this.state.photos,
     }
     addMetadata(state, tagCatMeta.metadata, this.state)
     this.props.onChange(state)
@@ -157,6 +185,20 @@ var ConfigDropper = React.createClass({
             onChange={this._onChangeAuthor}/>
       </div>
       <div className="config_section">
+        <div className="config_section-title">关键词</div>
+        <input
+          className="config_date"
+          value={this.state.keywords}
+          onChange={this._onChangeKeywords}/>
+      </div>
+      <div className="config_section">
+        <div className="config_section-title">摘要</div>
+        <textarea
+          className="config_date"
+          value={this.state.excerpt}
+          onChange={this._onChangeExcerpt}/>
+      </div>
+      <div className="config_section">
         <div className="config_section-title">Tags</div>
         <AutoList
           options={this.props.tagsCategoriesAndMetadata.tags}
@@ -169,6 +211,13 @@ var ConfigDropper = React.createClass({
           options={this.props.tagsCategoriesAndMetadata.categories}
           values={this.state.categories}
           onChange={this._onChange.bind(null, 'categories')}/>
+      </div>
+      <div className="config_section">
+        <div className="config_section-title">封面</div>
+        <AutoList
+          options={this.props.tagsCategoriesAndMetadata.photos}
+          values={this.state.photos}
+          onChange={this._onChange.bind(null, 'photos')}/>
       </div>
       {this.configMetadata()}
     </div>
